@@ -41,7 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "../posix/posix_public.h"
 #include "sound.h"
 
-const char	*s_driverArgs[]	= { "best", "oss", "alsa", NULL };
+const char	*s_driverArgs[]	= { "best", "oss", "alsa", "pulse", NULL };
 
 #ifndef NO_ALSA
 static idCVar s_driver( "s_driver", s_driverArgs[0], CVAR_SYSTEM | CVAR_ARCHIVE, "sound driver. 'best' will attempt to use alsa and fallback to OSS if not available", s_driverArgs, idCmdSystem::ArgCompletion_String<s_driverArgs> );
@@ -63,6 +63,10 @@ idAudioHardware *idAudioHardware::Alloc() {
 	}
 	if ( !strcmp( s_driver.GetString(), "alsa" ) ) {
 		return new idAudioHardwareALSA;
+	}
+	
+	if ( !strcmp( s_driver.GetString(), "pulse" ) ) {
+		return new idAudioHardwarePULSE;
 	}
 #endif
 	return new idAudioHardwareOSS;

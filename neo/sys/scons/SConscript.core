@@ -334,6 +334,9 @@ if ( ALSA != '0' ):
 	sound_list.append( '../../sys/linux/sound_alsa.cpp' )
 else:
 	sound_env.Append( CPPDEFINES = 'NO_ALSA' )
+
+local_env.Append( LIBS = [ 'pulse-simple' ] )
+sound_list.append( '../../sys/linux/sound_pulse.cpp' )
 sound_lib = sound_env.StaticLibrary( 'sound', sound_list )
 
 local_env.Append( LIBS = [ 'pthread', 'dl' ] )

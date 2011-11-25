@@ -184,4 +184,42 @@ private:
 
 #endif // NO_ALSA
 
+#include <pulse/simple.h>
+
+class idAudioHardwarePULSE : public idAudioHardware {
+private:
+	pa_simple			*m_pulse;
+	pa_sample_spec 		m_spec;
+
+	unsigned int		m_channels;
+	void				*m_buffer;
+	int					m_buffer_size;
+	
+public:
+						idAudioHardwarePULSE() {
+							m_channels			= 0;
+							m_buffer			= NULL;
+							m_buffer_size		= 0;
+						}
+						virtual				~idAudioHardwarePULSE();
+
+    bool				Initialize( void );
+
+	// Linux driver doesn't support memory map API
+	bool				Lock( void **pDSLockedBuffer, ulong *dwDSLockedBufferSize ) { return false; }
+	bool				Unlock( void *pDSLockedBuffer, dword dwDSLockedBufferSize ) { return false; }
+	bool				GetCurrentPosition( ulong *pdwCurrentWriteCursor ) { return false; }
+	
+	bool				Flush();
+	void				Write( bool flushing );
+
+	int					GetNumberOfSpeakers( void ) { return m_spec.channels; }
+	int					GetMixBufferSize( void );
+	short*				GetMixBuffer( void );
+
+private:
+	void				Release();
+	void				InitFailed();
+};
+
 #endif
